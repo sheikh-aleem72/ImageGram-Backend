@@ -1,12 +1,11 @@
 import express from 'express';
-import { StatusCodes } from 'http-status-codes';
+
+import { signUpController } from '../../controller/userController.js';
+import { userSignUpSchema } from '../../validators/userSchema.js';
+import { validate } from '../../validators/zodValidator.js';
 
 const router = express.Router();
 
-router.use('/', (req, res) => {
-  return res.status(StatusCodes.OK).json({
-    message: 'Api is working fine!'
-  });
-});
+router.post('/signup', validate(userSignUpSchema), signUpController);
 
 export default router;
