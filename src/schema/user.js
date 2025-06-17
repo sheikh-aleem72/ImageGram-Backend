@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema(
   {
@@ -58,10 +59,30 @@ const userSchema = new mongoose.Schema(
       maxlength: 150,
       trim: true,
       default: ''
+    },
+
+    accountPrivacy: {
+      type: String,
+      default: 'public',
+      enum: ['public', 'private']
     }
   },
   { timestamps: true }
 );
+
+userSchema.pre('save', function saveUser(next) {
+  if (this.isNew) {
+    const user = this;
+
+    const SALT = bcrypt.genSaltSync(9);
+
+    const hashedPassword = bcrypt.hashSync(user.password, SALT);
+
+    user.password = hashedPassword;
+  }
+
+  next();
+});
 
 const User = mongoose.model('User', userSchema);
 

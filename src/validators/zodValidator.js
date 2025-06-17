@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 export const validate = (schema) => {
   return async (req, res, next) => {
     try {
-      schema.parseAsync(req.body);
+      await schema.parseAsync(req.body);
       next();
     } catch (error) {
       console.log('Validation error from zod validator', error.errors);
@@ -16,7 +16,7 @@ export const validate = (schema) => {
         explanation += ' : ' + key.path[0] + ' ' + key.message;
       });
 
-      res.status(StatusCodes.BAD_REQUEST).json({
+      return res.status(StatusCodes.BAD_REQUEST).json({
         message: message,
         explanation: explanation
       });

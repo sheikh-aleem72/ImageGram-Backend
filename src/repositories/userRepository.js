@@ -8,6 +8,16 @@ const userRepository = {
     const newUser = new User(data);
     await newUser.save();
     return newUser;
+  },
+
+  getUserByEmail: async function (email) {
+    const user = await User.findOne({ email });
+    return user;
+  },
+
+  getUserByUsername: async function (username) {
+    const user = await User.findOne({ username });
+    return user;
   }
 };
 
