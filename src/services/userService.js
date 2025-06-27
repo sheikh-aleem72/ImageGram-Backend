@@ -1,9 +1,10 @@
+import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
+
 import userRepository from '../repositories/userRepository.js';
+import { generateJwtToken } from '../utils/common/authUtils.js';
 import ClientError from '../utils/errors/clientError.js';
 import ValidationError from '../utils/errors/validationError.js';
-import bcrypt from 'bcrypt';
-import { generateJwtToken } from '../utils/common/authUtils.js';
 
 export const signUpService = async (email, username, password) => {
   try {
@@ -94,6 +95,58 @@ export const checkIfUserExists = async (id) => {
     return response;
   } catch (error) {
     console.log('Error in checkIfUserExists!', error);
+    throw error;
+  }
+};
+
+export const updateNameService = async (id, name) => {
+  try {
+    const response = await userRepository.update(id, { name });
+    return response;
+  } catch (error) {
+    console.log('Error in update name!', error);
+    throw error;
+  }
+};
+
+export const getUserService = async (id) => {
+  try {
+    const response = await userRepository.getById(id);
+    return response;
+  } catch (error) {
+    console.log('Error in getUserService!', error);
+    throw error;
+  }
+};
+
+export const updateBioService = async (id, bio) => {
+  try {
+    const response = await userRepository.update(id, { bio });
+    return response;
+  } catch (error) {
+    console.log('Error in updateBioService!', error);
+    throw error;
+  }
+};
+
+export const updatePrivacyService = async (id, privacyStatus) => {
+  try {
+    const response = await userRepository.update(id, {
+      accountPrivacy: privacyStatus
+    });
+    return response;
+  } catch (error) {
+    console.log('Error in updatePrivacyService!', error);
+    throw error;
+  }
+};
+
+export const updateGenderService = async (id, gender) => {
+  try {
+    const response = await userRepository.update(id, { gender });
+    return response;
+  } catch (error) {
+    console.log('Error in updateGenderService!', error);
     throw error;
   }
 };

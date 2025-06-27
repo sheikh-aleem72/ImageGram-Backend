@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
   {
@@ -65,6 +65,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: 'public',
       enum: ['public', 'private']
+    },
+
+    gender: {
+      type: String,
+      default: 'male',
+      enum: ['male', 'female', 'other']
     }
   },
   { timestamps: true }

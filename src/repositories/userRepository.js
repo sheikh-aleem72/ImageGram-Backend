@@ -20,5 +20,4 @@ const userRepository = {
     return user;
   }
 };
-
 export default userRepository;

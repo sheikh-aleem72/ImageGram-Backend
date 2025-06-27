@@ -1,6 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
-import { errorResponse } from '../utils/common/responseObject';
-import { verifyJWT } from '../utils/common/authUtils';
+
+import { checkIfUserExists } from '../services/userService.js';
+import { verifyJWT } from '../utils/common/authUtils.js';
+import { errorResponse } from '../utils/common/responseObject.js';
 
 export const isAuthenticated = async (req, res, next) => {
   try {
@@ -49,7 +51,7 @@ export const isAuthenticated = async (req, res, next) => {
       error.name === 'TokenExpiredError'
     ) {
       return res.status(StatusCodes.FORBIDDEN).json(
-        errorReponse({
+        errorResponse({
           explanation: 'Invalid data sent from the client',
           message: 'Invalid auth token provided'
         })
@@ -57,6 +59,6 @@ export const isAuthenticated = async (req, res, next) => {
     }
     return res
       .status(error.status || StatusCodes.INTERNAL_SERVER_ERROR)
-      .json(errorReponse(error));
+      .json(errorResponse(error));
   }
 };
