@@ -150,3 +150,28 @@ export const updateGenderService = async (id, gender) => {
     throw error;
   }
 };
+
+export const updateProfilePictureService = async (id, imageURL) => {
+  try {
+    const response = await userRepository.update(id, {
+      profilePicture: imageURL
+    });
+    return response;
+  } catch (error) {
+    console.log('Error in updateProfilePictureService!', error);
+    throw error;
+  }
+};
+
+export const removeProfilePictureService = async (id) => {
+  try {
+    const response = await userRepository.update(id, {
+      profilePicture:
+        'https://res.cloudinary.com/dsqd95xzu/image/upload/v1750073303/default-profile-picture_bnpglm.jpg'
+    });
+    return response;
+  } catch (error) {
+    console.log('Error in removeProfilePictureService!', error);
+    throw error;
+  }
+};

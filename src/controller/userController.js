@@ -2,12 +2,14 @@ import { StatusCodes } from 'http-status-codes';
 
 import {
   getUserService,
+  removeProfilePictureService,
   signInService,
   signUpService,
   updateBioService,
   updateGenderService,
   updateNameService,
-  updatePrivacyService
+  updatePrivacyService,
+  updateProfilePictureService
 } from '../services/userService.js';
 import {
   errorResponse,
@@ -142,6 +144,45 @@ export const updateGenderController = async (req, res) => {
       .json(successResponse(response, 'Gender updated successfully!'));
   } catch (error) {
     console.log('Error in updateGenderController : ', error);
+    if (error.status) {
+      return res.status(error.status).json(errorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerError(error));
+  }
+};
+
+export const updateProfilePictureController = async (req, res) => {
+  try {
+    const response = await updateProfilePictureService(
+      req.user.id,
+      req.body?.imageURL
+    );
+
+    return res
+      .status(StatusCodes.ACCEPTED)
+      .json(successResponse(response, 'Dp updated successfully!'));
+  } catch (error) {
+    console.log('Error in updateProfilePictureController : ', error);
+    if (error.status) {
+      return res.status(error.status).json(errorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerError(error));
+  }
+};
+
+export const removeProfilePictureController = async (req, res) => {
+  try {
+    const response = await removeProfilePictureService(req.user.id);
+
+    return res
+      .status(StatusCodes.ACCEPTED)
+      .json(successResponse(response, 'Dp removed successfully!'));
+  } catch (error) {
+    console.log('Error in removeProfilePictureController : ', error);
     if (error.status) {
       return res.status(error.status).json(errorResponse(error));
     }

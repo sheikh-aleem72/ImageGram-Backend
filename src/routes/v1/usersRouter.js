@@ -2,12 +2,14 @@ import express from 'express';
 
 import {
   getUserController,
+  removeProfilePictureController,
   signInController,
   signUpController,
   updateBioController,
   updateGenderController,
   updateNameController,
-  updatePrivacyController
+  updatePrivacyController,
+  updateProfilePictureController
 } from '../../controller/userController.js';
 import { isAuthenticated } from '../../middlewares/authMiddleware.js';
 import {
@@ -31,5 +33,17 @@ router.post('/updatebio', isAuthenticated, updateBioController);
 router.post('/updateprivacy', isAuthenticated, updatePrivacyController);
 
 router.post('/updategender', isAuthenticated, updateGenderController);
+
+router.post(
+  '/updateprofilepicture',
+  isAuthenticated,
+  updateProfilePictureController
+);
+
+router.post(
+  '/removeprofilepicture',
+  isAuthenticated,
+  removeProfilePictureController
+);
 
 export default router;
