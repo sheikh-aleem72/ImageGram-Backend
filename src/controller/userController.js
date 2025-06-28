@@ -80,7 +80,7 @@ export const updateNameController = async (req, res) => {
 
 export const getUserController = async (req, res) => {
   try {
-    const response = await getUserService(req.user.id);
+    const response = await getUserService(req.body.userId);
 
     return res
       .status(StatusCodes.OK)

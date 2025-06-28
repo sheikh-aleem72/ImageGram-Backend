@@ -6,12 +6,12 @@ import mongoose from 'mongoose';
 */
 const followSchema = new mongoose.Schema(
   {
-    follower: {
+    followerUser: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
-    following: {
+    followingUser: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
@@ -21,8 +21,8 @@ const followSchema = new mongoose.Schema(
 );
 
 // Maintains uniqueness
-followSchema.index({ follower: 1, following: 1 }, { unique: true });
+followSchema.index({ followerUser: 1, followingUser: 1 }, { unique: true });
 
-const follow = mongoose.model('Follow', followSchema);
+const Follow = mongoose.model('Follow', followSchema);
 
-export default follow;
+export default Follow;
