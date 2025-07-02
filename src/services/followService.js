@@ -1,5 +1,10 @@
 import followRepository from '../repositories/followRepository.js';
 import ClientError from '../utils/errors/clientError.js';
+import { getIO } from '../utils/socketUtils/socket.js';
+import {
+  removeNotificationService,
+  sendNotification
+} from './notificationService.js';
 import { checkIfUserExists } from './userService.js';
 
 export const followUserService = async (currentUserId, targetUserId) => {
@@ -12,6 +17,17 @@ export const followUserService = async (currentUserId, targetUserId) => {
     const response = await followRepository.followUser(
       currentUserId,
       targetUserId
+    );
+
+    const io = getIO();
+    // Notify the user about follow
+    await sendNotification(
+      {
+        type: 'follow',
+        sender: currentUserId,
+        receiver: targetUserId
+      },
+      io
     );
 
     return response;
@@ -32,6 +48,9 @@ export const unfollowUserService = async (currentUserId, targetUserId) => {
       currentUserId,
       targetUserId
     );
+
+    // Remove notification
+    await removeNotificationService('follow', targetUserId, currentUserId);
 
     return response;
   } catch (error) {
