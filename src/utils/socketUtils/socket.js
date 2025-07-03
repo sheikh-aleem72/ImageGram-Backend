@@ -1,5 +1,5 @@
 import {
-  bindUserSocket,
+  // bindUserSocket,
   //   removeUserSocket,
   removeUserUsingSocketId,
   socketEvents

@@ -1,6 +1,6 @@
-import { getUserSocketId } from './socketEventUtils.js';
-import { getIO } from './socket.js';
 import { getUnreadNotifications } from '../../services/notificationService.js';
+import { getIO } from './socket.js';
+import { getUserSocketId } from './socketEventUtils.js';
 
 export const notifyUser = async (userId) => {
   const ioInstance = getIO();
