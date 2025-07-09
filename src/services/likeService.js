@@ -8,15 +8,22 @@ import {
   removeNotificationService,
   sendNotification
 } from './notificationService.js';
+import { commentRepository } from '../repositories/commentRepository.js';
 
-export const updateLikeCount = async (targetId) => {
+export const updateLikeCount = async (targetId, targetType) => {
   // get likes count
   const likeCount = await likeRepository.getLikeCount(targetId);
 
   // Update like count of target: 'post' or 'comment'
-  await postRepository.update(targetId, {
-    likeCount: likeCount
-  });
+  if (targetType == 'post') {
+    await postRepository.update(targetId, {
+      likeCount: likeCount
+    });
+  } else if (targetType == 'comment') {
+    await commentRepository.update(targetId, {
+      likeCount: likeCount
+    });
+  }
 };
 
 export const getAuthorOfTarget = async (targetId, targetType) => {
@@ -24,7 +31,7 @@ export const getAuthorOfTarget = async (targetId, targetType) => {
   if (targetType == 'post') {
     target = await postRepository.getById(targetId);
   } else if (targetType == 'comment') {
-    //
+    target = await commentRepository.getById(targetId);
   }
 
   return target;
@@ -54,7 +61,7 @@ export const createLikeService = async (user, targetId, targetType) => {
     });
 
     // Update like count of target: 'post' or 'comment'
-    await updateLikeCount(targetId);
+    await updateLikeCount(targetId, targetType);
 
     // Get author of target
     const target = await getAuthorOfTarget(targetId, targetType);

@@ -24,7 +24,6 @@ export const successResponse = (data, message) => {
   return {
     success: true,
     data,
-    err: {},
     message
   };
 };
