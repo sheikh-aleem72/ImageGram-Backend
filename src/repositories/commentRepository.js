@@ -1,6 +1,7 @@
-import crudRepository from './crudRepository.js';
-import Comment from '../schema/commentSchema.js';
 import mongoose from 'mongoose';
+
+import Comment from '../schema/commentSchema.js';
+import crudRepository from './crudRepository.js';
 
 export const commentRepository = {
   ...crudRepository(Comment),
@@ -78,5 +79,11 @@ export const commentRepository = {
     ];
 
     await Comment.deleteMany({ _id: { $in: allCommentIds } });
+  },
+
+  getCommentsCount: async function (postId) {
+    const count = await Comment.countDocuments({ postId });
+
+    return count;
   }
 };

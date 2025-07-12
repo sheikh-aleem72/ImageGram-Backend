@@ -1,5 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 
+import { commentRepository } from '../repositories/commentRepository.js';
+import likeRepository from '../repositories/likeRepository.js';
 import postRepository from '../repositories/postRepository.js';
 import ClientError from '../utils/errors/clientError.js';
 
@@ -59,6 +61,13 @@ export const deletePostService = async (id, userId) => {
         status: StatusCodes.FORBIDDEN
       });
     }
+
+    // Delete comments
+    await commentRepository.deleteMany(id);
+
+    // Delete likes
+    await likeRepository.deleteMany(id);
+
     const response = await postRepository.delete(id);
     return response;
   } catch (error) {

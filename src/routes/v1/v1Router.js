@@ -1,10 +1,10 @@
 import express from 'express';
 
+import commentRouter from './commentRouter.js';
 import followsRouter from './followsRouter.js';
 import likeRouter from './likeRouter.js';
 import postRouter from './postRouter.js';
 import usersRouter from './usersRouter.js';
-import commentRouter from './commentRouter.js';
 
 const router = express.Router();
 

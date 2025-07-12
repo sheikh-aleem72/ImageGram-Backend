@@ -1,9 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import {
-  errorResponse,
-  internalServerError,
-  successResponse
-} from '../utils/common/responseObject.js';
+
 import {
   createCommentService,
   deleteCommentService,
@@ -11,6 +7,11 @@ import {
   getAllParentCommentsOfPostService,
   getAllRepliesService
 } from '../services/commentService.js';
+import {
+  errorResponse,
+  internalServerError,
+  successResponse
+} from '../utils/common/responseObject.js';
 
 export const createCommentController = async (req, res) => {
   try {
