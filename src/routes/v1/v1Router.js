@@ -1,6 +1,7 @@
 import express from 'express';
 
 import commentRouter from './commentRouter.js';
+import feedRouter from './feedRouter.js';
 import followRequestRouter from './followRequestRouter.js';
 import followsRouter from './followsRouter.js';
 import likeRouter from './likeRouter.js';
@@ -20,5 +21,7 @@ router.use('/like', likeRouter);
 router.use('/comment', commentRouter);
 
 router.use('/follow-request', followRequestRouter);
+
+router.use('/feed', feedRouter);
 
 export default router;
