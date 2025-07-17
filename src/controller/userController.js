@@ -60,7 +60,6 @@ export const signInController = async (req, res) => {
 
 export const updateNameController = async (req, res) => {
   try {
-    console.log('Req.body.name: ', req.body.name);
     const name = req.body.name;
     const response = await updateNameService(req.user.id, name);
 

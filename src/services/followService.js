@@ -1,6 +1,7 @@
 import followRepository from '../repositories/followRepository.js';
 import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
+import { createFollowRequestService } from './followRequestService.js';
 import {
   removeNotificationService,
   sendNotification
@@ -14,10 +15,15 @@ export const followUserService = async (currentUserId, targetUserId) => {
       throw new ClientError({ message: 'User not found!', status: 404 });
     }
 
-    const response = await followRepository.followUser(
-      currentUserId,
-      targetUserId
-    );
+    let response;
+    // check if user has private account
+
+    const privacy = user.accountPrivacy;
+    if (privacy == 'private') {
+      response = await createFollowRequestService(currentUserId, targetUserId);
+    } else {
+      response = await followRepository.followUser(currentUserId, targetUserId);
+    }
 
     const io = getIO();
     // Notify the user about follow
@@ -30,7 +36,7 @@ export const followUserService = async (currentUserId, targetUserId) => {
       io
     );
 
-    return response;
+    return { privacy, response };
   } catch (error) {
     console.log('Error in followUserService', error);
     throw error;

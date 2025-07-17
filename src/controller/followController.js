@@ -21,7 +21,14 @@ export const followUserController = async (req, res) => {
 
     return res
       .status(StatusCodes.ACCEPTED)
-      .json(successResponse(response, 'Added follower successfully!'));
+      .json(
+        successResponse(
+          response.response,
+          response.privacy == 'private'
+            ? `Request sent successfully`
+            : `Added follower successfully!`
+        )
+      );
   } catch (error) {
     console.log('Error in followUserController', error);
     if (error.code) {

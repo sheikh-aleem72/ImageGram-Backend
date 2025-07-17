@@ -1,6 +1,7 @@
 import express from 'express';
 
 import commentRouter from './commentRouter.js';
+import followRequestRouter from './followRequestRouter.js';
 import followsRouter from './followsRouter.js';
 import likeRouter from './likeRouter.js';
 import postRouter from './postRouter.js';
@@ -17,5 +18,7 @@ router.use('/post', postRouter);
 router.use('/like', likeRouter);
 
 router.use('/comment', commentRouter);
+
+router.use('/follow-request', followRequestRouter);
 
 export default router;
