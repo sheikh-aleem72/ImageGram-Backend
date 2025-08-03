@@ -1,7 +1,7 @@
 import Post from '../schema/postSchema.js';
 import { getFollowingService } from './followService.js';
 
-const FEED_PAGE_SIZE = 5;
+const FEED_PAGE_SIZE = 20;
 
 export const feedService = async (userId, beforeCursor) => {
   try {
@@ -11,7 +11,7 @@ export const feedService = async (userId, beforeCursor) => {
     let followingList = [];
 
     list.forEach((user) => {
-      followingList.push(user.followingUser);
+      followingList.push(user?.followingUser);
     });
 
     // Build query

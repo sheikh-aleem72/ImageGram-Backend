@@ -4,6 +4,16 @@ import { notifyUser } from './notification.js';
 const userSocketMap = new Map();
 
 export const socketEvents = (socket) => {
+  // Join user to its own room to receive new post from followings
+  socket.on('join-user-room', (userId, cb) => {
+    socket.join(userId);
+
+    cb({
+      success: true,
+      message: 'Room joined successfully!'
+    });
+  });
+
   socket.on('Join', async (data, cb) => {
     console.log('User has send his ID - ', data.userId);
 

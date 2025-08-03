@@ -4,6 +4,9 @@ import { commentRepository } from '../repositories/commentRepository.js';
 import likeRepository from '../repositories/likeRepository.js';
 import postRepository from '../repositories/postRepository.js';
 import ClientError from '../utils/errors/clientError.js';
+import { getIO } from '../utils/socketUtils/socket.js';
+import { getFollowersService } from './followService.js';
+import { getUserSocketId } from '../utils/socketUtils/socketEventUtils.js';
 
 export const createPostService = async (urls, userId, caption) => {
   try {
@@ -11,6 +14,19 @@ export const createPostService = async (urls, userId, caption) => {
       imageUrls: urls,
       author: userId,
       caption: caption
+    });
+
+    // Notify followers about new post
+    const followers = await getFollowersService(userId);
+
+    const io = getIO();
+    followers.forEach((follower) => {
+      const followerId = follower.followerUser._id.toString();
+      const socketId = getUserSocketId(followerId);
+      io.to(socketId).emit('new-post-notify', {
+        author: userId,
+        postId: newPost._id
+      });
     });
 
     return newPost;
