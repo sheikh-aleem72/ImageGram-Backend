@@ -5,8 +5,8 @@ import likeRepository from '../repositories/likeRepository.js';
 import postRepository from '../repositories/postRepository.js';
 import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
-import { getFollowersService } from './followService.js';
 import { getUserSocketId } from '../utils/socketUtils/socketEventUtils.js';
+import { getFollowersService } from './followService.js';
 
 export const createPostService = async (urls, userId, caption) => {
   try {
