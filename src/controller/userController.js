@@ -9,7 +9,8 @@ import {
   updateGenderService,
   updateNameService,
   updatePrivacyService,
-  updateProfilePictureService
+  updateProfilePictureService,
+  updateUserDetailsService
 } from '../services/userService.js';
 import {
   errorResponse,
@@ -31,7 +32,7 @@ export const signUpController = async (req, res) => {
   } catch (error) {
     console.log('Error while registering user: ', error);
     if (error.statusCode) {
-      return res.status(error.statusCode).json(errorResponse(error));
+      return res.status(error.code).json(errorResponse(error));
     }
 
     return res
@@ -79,7 +80,8 @@ export const updateNameController = async (req, res) => {
 
 export const getUserController = async (req, res) => {
   try {
-    const response = await getUserService(req.body.userId);
+    console.log('Request with id', req.params.userId);
+    const response = await getUserService(req.params.userId);
 
     return res
       .status(StatusCodes.OK)
@@ -182,6 +184,24 @@ export const removeProfilePictureController = async (req, res) => {
       .json(successResponse(response, 'Dp removed successfully!'));
   } catch (error) {
     console.log('Error in removeProfilePictureController : ', error);
+    if (error.status) {
+      return res.status(error.status).json(errorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerError(error));
+  }
+};
+
+export const updateUserDetailsController = async (req, res) => {
+  try {
+    const response = await updateUserDetailsService(req.user.id, req.body);
+
+    return res
+      .status(StatusCodes.ACCEPTED)
+      .json(successResponse(response, 'Updated successfully!'));
+  } catch (error) {
+    console.log('Error in updateUserDetailsController : ', error);
     if (error.status) {
       return res.status(error.status).json(errorResponse(error));
     }

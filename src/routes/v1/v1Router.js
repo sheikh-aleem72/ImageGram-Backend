@@ -1,5 +1,6 @@
 import express from 'express';
 
+import cloudinaryRouter from './cloudinaryRouter.js';
 import commentRouter from './commentRouter.js';
 import feedRouter from './feedRouter.js';
 import followRequestRouter from './followRequestRouter.js';
@@ -23,5 +24,7 @@ router.use('/comment', commentRouter);
 router.use('/follow-request', followRequestRouter);
 
 router.use('/feed', feedRouter);
+
+router.use('/cloudinary', cloudinaryRouter);
 
 export default router;

@@ -73,7 +73,8 @@ export const signInService = async (userDetails) => {
     const token = generateJwtToken({
       email: user.email,
       username: user.username,
-      id: user._id
+      id: user._id,
+      profilePicture: user.profilePicture
     });
 
     // 4. Return token
@@ -81,7 +82,8 @@ export const signInService = async (userDetails) => {
       username: user.username,
       email: user.email,
       id: user._id,
-      token: token
+      token: token,
+      profilePicture: user.profilePicture
     };
   } catch (error) {
     console.log('Error from signInService', error);
@@ -172,6 +174,16 @@ export const removeProfilePictureService = async (id) => {
     return response;
   } catch (error) {
     console.log('Error in removeProfilePictureService!', error);
+    throw error;
+  }
+};
+
+export const updateUserDetailsService = async (id, data) => {
+  try {
+    const response = await userRepository.update(id, data);
+    return response;
+  } catch (error) {
+    console.log('Error in updateUserDetailsService!', error);
     throw error;
   }
 };

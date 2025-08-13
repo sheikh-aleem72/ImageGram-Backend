@@ -9,7 +9,8 @@ import {
   updateGenderController,
   updateNameController,
   updatePrivacyController,
-  updateProfilePictureController
+  updateProfilePictureController,
+  updateUserDetailsController
 } from '../../controller/userController.js';
 import { isAuthenticated } from '../../middlewares/authMiddleware.js';
 import {
@@ -24,7 +25,9 @@ router.post('/signup', validate(userSignUpSchema), signUpController);
 
 router.post('/signin', validate(userSignInSchema), signInController);
 
-router.get('/getuser', isAuthenticated, getUserController);
+router.get('/:userId', isAuthenticated, getUserController);
+
+router.post('/update', isAuthenticated, updateUserDetailsController);
 
 router.post('/updatename', isAuthenticated, updateNameController);
 

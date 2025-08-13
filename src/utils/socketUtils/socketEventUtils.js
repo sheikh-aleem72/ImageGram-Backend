@@ -14,11 +14,12 @@ export const socketEvents = (socket) => {
     });
   });
 
+  // Join to socket connection using 'Join' event from postman
   socket.on('Join', async (data, cb) => {
     console.log('User has send his ID - ', data.userId);
 
     // For Postman test
-    bindUserSocket(data.userId, socket.id);
+    // bindUserSocket(data.userId, socket.id);
 
     await notifyUser(data.userId);
 

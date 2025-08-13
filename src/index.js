@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
 import { StatusCodes } from 'http-status-codes';
@@ -5,7 +6,7 @@ import { Server } from 'socket.io';
 
 import connectDB from './config/dbConfig.js';
 import { PORT } from './config/serverConfig.js';
-// import { socketAuthMiddleware } from './middlewares/socketAuthMiddleware.js';
+import { socketAuthMiddleware } from './middlewares/socketAuthMiddleware.js';
 import apiRouter from './routes/apiRouter.js';
 import { setupSocket } from './utils/socketUtils/socket.js';
 
@@ -17,11 +18,12 @@ const io = new Server(server, {
 });
 
 // Register socket middleware
-// io.use(socketAuthMiddleware); // Uncomment this when connected through frontend
+io.use(socketAuthMiddleware); // Uncomment this when connected through frontend
 
 // Handle socket connections
 setupSocket(io);
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiRouter);

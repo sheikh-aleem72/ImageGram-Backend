@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 
+import { JWT_SECRET_KEY } from '../config/serverConfig.js';
+
 export const socketAuthMiddleware = (socket, next) => {
   const token = socket.handshake.auth.token;
 
@@ -8,7 +10,7 @@ export const socketAuthMiddleware = (socket, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET_KEY);
     socket.userId = decoded.id; // Attach userId to socket object
     next(); // Allow connection
   } catch (err) {

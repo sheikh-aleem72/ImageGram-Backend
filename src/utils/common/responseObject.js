@@ -8,7 +8,7 @@ export const internalServerError = (error) => {
 };
 
 export const errorResponse = (error) => {
-  if (!error.message && !error.explanation) {
+  if (!error.errmsg) {
     return internalServerError(error);
   }
 
@@ -16,7 +16,7 @@ export const errorResponse = (error) => {
     success: false,
     err: error,
     data: {},
-    message: error.message
+    message: error.errmsg
   };
 };
 

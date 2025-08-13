@@ -1,7 +1,8 @@
+import { notifyUser } from './notification.js';
 import {
-  // bindUserSocket,
-  //   removeUserSocket,
-  removeUserUsingSocketId,
+  bindUserSocket,
+  removeUserSocket,
+  // removeUserUsingSocketId,
   socketEvents
 } from './socketEventUtils.js';
 let ioInstance = null;
@@ -10,23 +11,25 @@ let ioInstance = null;
 export const setupSocket = (io) => {
   ioInstance = io;
   ioInstance.on('connection', async (socket) => {
-    console.log('An user is connected with id - ', socket.id);
+    console.log('An user is connected with id - ', socket.id, socket.userId);
 
     // For frontend
-    // bindUserSocket(socket.userId, socket.id);
+
+    // Bind user with socket in map
+    bindUserSocket(socket.userId, socket.id);
 
     // Notify user about unread notifications
-    // notifyUser(socket.user.id);
+    notifyUser(socket.userId);
 
     socketEvents(socket);
 
     socket.on('disconnect', () => {
       // For frontend
-      // removeUserSocket(userId);
+      removeUserSocket(socket.userId);
 
       // For postman
-      console.log('User disconnected with socket id: ', socket.id);
-      removeUserUsingSocketId(socket.id);
+      // console.log('User disconnected with socket id: ', socket.id);
+      // removeUserUsingSocketId(socket.id);
     });
   });
 };
