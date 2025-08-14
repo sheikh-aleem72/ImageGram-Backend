@@ -1,4 +1,5 @@
 import followRepository from '../repositories/followRepository.js';
+import userRepository from '../repositories/userRepository.js';
 import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
 import { createFollowRequestService } from './followRequestService.js';
@@ -7,6 +8,19 @@ import {
   sendNotification
 } from './notificationService.js';
 import { checkIfUserExists } from './userService.js';
+
+export const updateFollowerCount = async (id) => {
+  const followerCount = await followRepository.getFollowersCount(id);
+  console.log('Follower count: ', followerCount);
+
+  await userRepository.update(id, { followersCount: followerCount });
+};
+
+export const updateFollowingCount = async (id) => {
+  const followingCount = await followRepository.getFollowingCount(id);
+
+  await userRepository.update(id, { followingCount: followingCount });
+};
 
 export const followUserService = async (currentUserId, targetUserId) => {
   try {
@@ -36,6 +50,9 @@ export const followUserService = async (currentUserId, targetUserId) => {
       io
     );
 
+    await updateFollowerCount(targetUserId);
+    await updateFollowingCount(currentUserId);
+
     return { privacy, response };
   } catch (error) {
     console.log('Error in followUserService', error);
@@ -57,6 +74,9 @@ export const unfollowUserService = async (currentUserId, targetUserId) => {
 
     // Remove notification
     await removeNotificationService('follow', targetUserId, currentUserId);
+
+    await updateFollowerCount(targetUserId);
+    await updateFollowingCount(currentUserId);
 
     return response;
   } catch (error) {

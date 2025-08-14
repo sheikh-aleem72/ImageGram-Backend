@@ -80,8 +80,7 @@ export const updateNameController = async (req, res) => {
 
 export const getUserController = async (req, res) => {
   try {
-    console.log('Request with id', req.params.userId);
-    const response = await getUserService(req.params.userId);
+    const response = await getUserService(req.body.userId);
 
     return res
       .status(StatusCodes.OK)
@@ -177,6 +176,7 @@ export const updateProfilePictureController = async (req, res) => {
 
 export const removeProfilePictureController = async (req, res) => {
   try {
+    console.log('Reaching here!!!');
     const response = await removeProfilePictureService(req.user.id);
 
     return res
@@ -195,7 +195,7 @@ export const removeProfilePictureController = async (req, res) => {
 
 export const updateUserDetailsController = async (req, res) => {
   try {
-    const response = await updateUserDetailsService(req.user.id, req.body);
+    const response = await updateUserDetailsService(req.user.id, req.body.data);
 
     return res
       .status(StatusCodes.ACCEPTED)

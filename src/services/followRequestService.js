@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import followRepository from '../repositories/followRepository.js';
 import followRequestRepository from '../repositories/followRequestRepository.js';
 import ClientError from '../utils/errors/clientError.js';
+import { updateFollowerCount, updateFollowingCount } from './followService.js';
 
 export const createFollowRequestService = async (sender, receiver) => {
   try {
@@ -59,6 +60,9 @@ export const acceptFollowRequestService = async (requestId, userId) => {
       request.sender,
       request.receiver
     );
+
+    await updateFollowerCount(request.receiver);
+    await updateFollowingCount(request.sender);
 
     // Remove request from database.
     await followRequestRepository.delete(request._id);

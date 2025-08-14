@@ -22,7 +22,6 @@ export const getPresignedUrlFromCloudinary = async (req, res) => {
     );
 
     const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-
     return res.json({
       uploadUrl,
       signature,

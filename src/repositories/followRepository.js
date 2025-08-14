@@ -36,6 +36,16 @@ const followRepository = {
     }).populate('followingUser', 'username');
 
     return response;
+  },
+
+  getFollowersCount: async function (userId) {
+    const count = await Follow.countDocuments({ followingUser: userId });
+    return count;
+  },
+
+  getFollowingCount: async function (userId) {
+    const count = await Follow.countDocuments({ followerUser: userId });
+    return count;
   }
 };
 
