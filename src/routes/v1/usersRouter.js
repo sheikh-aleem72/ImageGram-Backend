@@ -1,6 +1,7 @@
 import express from 'express';
 
 import {
+  getAllUserController,
   getUserController,
   removeProfilePictureController,
   signInController,
@@ -24,6 +25,8 @@ const router = express.Router();
 router.post('/signup', validate(userSignUpSchema), signUpController);
 
 router.post('/signin', validate(userSignInSchema), signInController);
+
+router.get('/all-users', isAuthenticated, getAllUserController);
 
 router.get('/:userId', isAuthenticated, getUserController);
 

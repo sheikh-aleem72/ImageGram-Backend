@@ -46,6 +46,15 @@ const followRepository = {
   getFollowingCount: async function (userId) {
     const count = await Follow.countDocuments({ followerUser: userId });
     return count;
+  },
+
+  isFollowExists: async function (currentUserId, targetUserId) {
+    const response = await Follow.find({
+      followerUser: currentUserId,
+      followingUser: targetUserId
+    });
+
+    return response;
   }
 };
 

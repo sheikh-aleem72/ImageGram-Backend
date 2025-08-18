@@ -2,7 +2,10 @@ import followRepository from '../repositories/followRepository.js';
 import userRepository from '../repositories/userRepository.js';
 import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
-import { createFollowRequestService } from './followRequestService.js';
+import {
+  createFollowRequestService,
+  getFollowRequestService
+} from './followRequestService.js';
 import {
   removeNotificationService,
   sendNotification
@@ -37,6 +40,8 @@ export const followUserService = async (currentUserId, targetUserId) => {
       response = await createFollowRequestService(currentUserId, targetUserId);
     } else {
       response = await followRepository.followUser(currentUserId, targetUserId);
+      await updateFollowerCount(targetUserId);
+      await updateFollowingCount(currentUserId);
     }
 
     const io = getIO();
@@ -49,9 +54,6 @@ export const followUserService = async (currentUserId, targetUserId) => {
       },
       io
     );
-
-    await updateFollowerCount(targetUserId);
-    await updateFollowingCount(currentUserId);
 
     return { privacy, response };
   } catch (error) {
@@ -115,4 +117,52 @@ export const getFollowingService = async (userId) => {
     console.log('Error in getFollowingService', error);
     throw error;
   }
+};
+
+export const relationshipStatusService = async (
+  currentUserId,
+  targetUserId
+) => {
+  try {
+    // Check if current user already follow target user
+    const isAlreadyFollowing = await isFollowExistsService(
+      currentUserId,
+      targetUserId
+    );
+
+    if (isAlreadyFollowing.length > 0) {
+      return {
+        relationship: 'Following'
+      };
+    }
+
+    // Check if account is private and user has sent request
+    const isRequested = await getFollowRequestService(
+      currentUserId,
+      targetUserId
+    );
+
+    if (isRequested.length > 0) {
+      return {
+        relationship: 'Requested',
+        data: isRequested
+      };
+    }
+
+    // If none of above then sent not_following
+    return {
+      relationship: 'not_following'
+    };
+  } catch (error) {
+    console.log('Error in relationship status service', error);
+    throw error;
+  }
+};
+
+export const isFollowExistsService = async (currentUserId, targetUserId) => {
+  const response = await followRepository.isFollowExists(
+    currentUserId,
+    targetUserId
+  );
+  return response;
 };

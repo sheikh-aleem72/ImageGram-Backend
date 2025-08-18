@@ -187,3 +187,13 @@ export const updateUserDetailsService = async (id, data) => {
     throw error;
   }
 };
+
+export const getAllUserService = async () => {
+  try {
+    const response = await userRepository.getAll();
+    return response;
+  } catch (error) {
+    console.log('Error in get all user service!', error);
+    throw error;
+  }
+};

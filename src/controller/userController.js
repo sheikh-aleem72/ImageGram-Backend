@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 
 import {
+  getAllUserService,
   getUserService,
   removeProfilePictureService,
   signInService,
@@ -80,7 +81,7 @@ export const updateNameController = async (req, res) => {
 
 export const getUserController = async (req, res) => {
   try {
-    const response = await getUserService(req.body.userId);
+    const response = await getUserService(req.params.userId);
 
     return res
       .status(StatusCodes.OK)
@@ -202,6 +203,24 @@ export const updateUserDetailsController = async (req, res) => {
       .json(successResponse(response, 'Updated successfully!'));
   } catch (error) {
     console.log('Error in updateUserDetailsController : ', error);
+    if (error.status) {
+      return res.status(error.status).json(errorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerError(error));
+  }
+};
+
+export const getAllUserController = async (req, res) => {
+  try {
+    const response = await getAllUserService();
+
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, 'Users details fetched!'));
+  } catch (error) {
+    console.log('Error in getAllUserController : ', error);
     if (error.status) {
       return res.status(error.status).json(errorResponse(error));
     }
