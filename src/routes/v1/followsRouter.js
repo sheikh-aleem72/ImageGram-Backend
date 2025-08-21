@@ -15,9 +15,9 @@ router.post('/', isAuthenticated, followUserController);
 
 router.delete('/', isAuthenticated, unfollowUserController);
 
-router.get('/followers', isAuthenticated, getFollowersController);
+router.get('/followers/:targetUserId', isAuthenticated, getFollowersController);
 
-router.get('/following', isAuthenticated, getFollowingController);
+router.get('/following/:targetUserId', isAuthenticated, getFollowingController);
 
 router.get(
   '/relationship/:targetUserId',

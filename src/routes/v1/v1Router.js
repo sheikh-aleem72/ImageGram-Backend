@@ -8,6 +8,7 @@ import followsRouter from './followsRouter.js';
 import likeRouter from './likeRouter.js';
 import postRouter from './postRouter.js';
 import usersRouter from './usersRouter.js';
+import notificationRouter from './notificationRouter.js';
 
 const router = express.Router();
 
@@ -26,5 +27,7 @@ router.use('/follow-request', followRequestRouter);
 router.use('/feed', feedRouter);
 
 router.use('/cloudinary', cloudinaryRouter);
+
+router.use('/notifications', notificationRouter);
 
 export default router;

@@ -69,7 +69,7 @@ export const unfollowUserController = async (req, res) => {
 // Get the followers list of target user.
 export const getFollowersController = async (req, res) => {
   try {
-    const response = await getFollowersService(req.body.targetUserId);
+    const response = await getFollowersService(req.params.targetUserId);
 
     return res
       .status(StatusCodes.ACCEPTED)
@@ -88,7 +88,7 @@ export const getFollowersController = async (req, res) => {
 // Get the following list of target user
 export const getFollowingController = async (req, res) => {
   try {
-    const response = await getFollowingService(req.body.targetUserId);
+    const response = await getFollowingService(req.params.targetUserId);
 
     return res
       .status(StatusCodes.ACCEPTED)
@@ -117,7 +117,7 @@ export const relationshipStatusController = async (req, res) => {
         successResponse(response, 'Relationship status fetched successfully!')
       );
   } catch (error) {
-    console.log('Error form relationship status controller', error);
+    // console.log('Error form relationship status controller', error);
     if (error.status) {
       return res.status(error.status).json(errorResponse(error));
     }

@@ -31,11 +31,6 @@ export const socketEvents = (socket) => {
 
   socket.on('read-notifications', async (data, cb) => {
     readNotifications(data.userId);
-
-    cb({
-      success: true,
-      message: 'Marked notifications as read!'
-    });
   });
 };
 

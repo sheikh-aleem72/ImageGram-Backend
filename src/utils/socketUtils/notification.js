@@ -20,6 +20,8 @@ export const notifyUser = async (userId) => {
   }
 
   if (unreadNotifications.length > 0 && socketId) {
-    ioInstance.to(socketId).emit('unread-notifications', unreadNotifications);
+    ioInstance
+      .to(socketId)
+      .emit('unread-notifications', unreadNotifications.length); // Send absolute count of unread notifications
   }
 };

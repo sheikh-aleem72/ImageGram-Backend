@@ -4,6 +4,7 @@ import {
   isUserOnline
 } from '../utils/socketUtils/socketEventUtils.js';
 
+const PAGE_SIZE = 20;
 export const sendNotification = async (
   { type, sender, receiver, postId },
   io
@@ -23,9 +24,38 @@ export const sendNotification = async (
       const socketId = getUserSocketId(receiver);
       console.log('user is online and sending notification');
       io.to(socketId).emit('notifications', newNotification);
+      io.to(socketId).emit('new-notification', 1);
     }
   } catch (error) {
     console.log('Error from send notification service', error);
+    throw error;
+  }
+};
+
+export const fetchAllNotificationsService = async (receiver, beforeCursor) => {
+  try {
+    const query = {
+      receiver
+    };
+
+    if (beforeCursor) {
+      query.createdAt = { $lt: new Date(beforeCursor) };
+    }
+    const notifications = await Notification.find(query)
+      .sort({ createdAt: -1 })
+      .populate('sender', 'username profilePicture') // optional
+      .populate('postId');
+
+    // Determine next cursor
+    let nextCursor = null;
+    if (notifications.length == PAGE_SIZE) {
+      nextCursor =
+        notifications[notifications.length - 1].createdAt.toISOString();
+    }
+
+    return { notifications, nextCursor };
+  } catch (error) {
+    console.log('Error from fetch all notifications service: ', error);
     throw error;
   }
 };

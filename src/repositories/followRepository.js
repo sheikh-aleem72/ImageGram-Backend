@@ -25,7 +25,7 @@ const followRepository = {
   getFollowers: async function (userId) {
     const response = await Follow.find({
       followingUser: userId
-    }).populate('followerUser', 'username');
+    }).populate('followerUser', 'username profilePicture accountPrivacy');
 
     return response;
   },
@@ -33,7 +33,7 @@ const followRepository = {
   getFollowing: async function (userId) {
     const response = await Follow.find({
       followerUser: userId
-    }).populate('followingUser', 'username');
+    }).populate('followingUser', 'username profilePicture accountPrivacy');
 
     return response;
   },
