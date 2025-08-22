@@ -29,7 +29,7 @@ export const socketEvents = (socket) => {
     });
   });
 
-  socket.on('read-notifications', async (data, cb) => {
+  socket.on('read-notifications', async (data) => {
     readNotifications(data.userId);
   });
 };

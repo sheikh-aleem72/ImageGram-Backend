@@ -3,7 +3,9 @@ import { StatusCodes } from 'http-status-codes';
 import followRepository from '../repositories/followRepository.js';
 import followRequestRepository from '../repositories/followRequestRepository.js';
 import ClientError from '../utils/errors/clientError.js';
+import { getIO } from '../utils/socketUtils/socket.js';
 import { updateFollowerCount, updateFollowingCount } from './followService.js';
+import { sendNotification } from './notificationService.js';
 
 export const createFollowRequestService = async (sender, receiver) => {
   try {
@@ -59,6 +61,17 @@ export const acceptFollowRequestService = async (requestId, userId) => {
     const response = await followRepository.followUser(
       request.sender,
       request.receiver
+    );
+
+    const io = getIO();
+    // Notify the user about follow
+    await sendNotification(
+      {
+        type: 'accept',
+        sender: request.receiver, // Request is accepted by to who request is sent
+        receiver: request.sender // Request accepted should received by the user who requested follow
+      },
+      io
     );
 
     await updateFollowerCount(request.receiver);

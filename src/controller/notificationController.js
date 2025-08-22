@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+
 import { fetchAllNotificationsService } from '../services/notificationService.js';
 import {
   errorResponse,

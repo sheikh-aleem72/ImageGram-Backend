@@ -46,14 +46,25 @@ export const followUserService = async (currentUserId, targetUserId) => {
 
     const io = getIO();
     // Notify the user about follow
-    await sendNotification(
-      {
-        type: 'follow',
-        sender: currentUserId,
-        receiver: targetUserId
-      },
-      io
-    );
+    if (privacy === 'private') {
+      await sendNotification(
+        {
+          type: 'request',
+          sender: currentUserId,
+          receiver: targetUserId
+        },
+        io
+      );
+    } else {
+      await sendNotification(
+        {
+          type: 'follow',
+          sender: currentUserId,
+          receiver: targetUserId
+        },
+        io
+      );
+    }
 
     return { privacy, response };
   } catch (error) {
@@ -148,6 +159,31 @@ export const relationshipStatusService = async (
         data: isRequested
       };
     }
+
+    // Check if target user follows current user
+    const isFollowBack = await isFollowExistsService(
+      targetUserId,
+      currentUserId
+    );
+
+    if (isFollowBack.length > 0) {
+      return {
+        relationship: 'Follow Back'
+      };
+    }
+
+    // Check if target user has sent request to current user
+    // const hasRequestPending = await getFollowRequestService(
+    //   targetUserId,
+    //   currentUserId
+    // );
+
+    // if (hasRequestPending.length > 0) {
+    //   return {
+    //     relationship: 'Confirm',
+    //     data: hasRequestPending
+    //   };
+    // }
 
     // If none of above then sent not_following
     return {

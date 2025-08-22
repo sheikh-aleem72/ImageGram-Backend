@@ -24,7 +24,10 @@ export const sendNotification = async (
       const socketId = getUserSocketId(receiver);
       console.log('user is online and sending notification');
       io.to(socketId).emit('notifications', newNotification);
-      io.to(socketId).emit('new-notification', 1);
+      io.to(socketId).emit('new-notification', {
+        count: 1,
+        type: newNotification.type
+      });
     }
   } catch (error) {
     console.log('Error from send notification service', error);

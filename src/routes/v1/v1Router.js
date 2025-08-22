@@ -6,9 +6,9 @@ import feedRouter from './feedRouter.js';
 import followRequestRouter from './followRequestRouter.js';
 import followsRouter from './followsRouter.js';
 import likeRouter from './likeRouter.js';
+import notificationRouter from './notificationRouter.js';
 import postRouter from './postRouter.js';
 import usersRouter from './usersRouter.js';
-import notificationRouter from './notificationRouter.js';
 
 const router = express.Router();
 
