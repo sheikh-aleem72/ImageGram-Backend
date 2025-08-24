@@ -5,7 +5,9 @@ const postRepository = {
   ...crudRepository(Post),
 
   getUserPosts: async function (userId) {
-    const response = await Post.find({ author: userId });
+    const response = await Post.find({ author: userId }).sort({
+      createdAt: -1
+    });
     return response;
   }
 };
