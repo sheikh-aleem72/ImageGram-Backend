@@ -38,7 +38,7 @@ export const createPostController = async (req, res) => {
 
 export const getPostByIdController = async (req, res) => {
   try {
-    const response = await getPostByIdService(req.params.id);
+    const response = await getPostByIdService(req.user.id, req.params.id);
 
     return res
       .status(StatusCodes.CREATED)

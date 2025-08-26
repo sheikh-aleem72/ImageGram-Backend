@@ -9,6 +9,7 @@ import {
   removeNotificationService,
   sendNotification
 } from './notificationService.js';
+import Post from '../schema/postSchema.js';
 
 export const updateLikeCount = async (targetId, targetType) => {
   // get likes count
@@ -69,15 +70,17 @@ export const createLikeService = async (user, targetId, targetType) => {
     // send notification
     const io = getIO();
 
-    await sendNotification(
-      {
-        type: 'like',
-        sender: user,
-        receiver: target.author.toString(),
-        postId: targetId
-      },
-      io
-    );
+    if (user !== target.author._id.toString()) {
+      await sendNotification(
+        {
+          type: 'like',
+          sender: user,
+          receiver: target.author._id.toString(),
+          postId: targetId
+        },
+        io
+      );
+    }
 
     // Return response;
     return response;
@@ -104,19 +107,42 @@ export const deleteLikeService = async (user, targetId, targetType) => {
 
     let response = await likeRepository.delete(isLiked._id);
 
-    // Update like Count
-    await updateLikeCount(targetId);
-
     // Get author of target
     const target = await getAuthorOfTarget(targetId, targetType);
 
     // delete previous notification
     await removeNotificationService('like', user, target.author);
 
-    // send response
-    return response;
+    // Decrement likeCount in Post
+    const updatedPost = await Post.findByIdAndUpdate(
+      targetId,
+      { $inc: { likeCount: -1 } },
+      { new: true } // <-- return updated doc
+    )
+      .populate('author', 'username profilePicture')
+      .lean();
+
+    // Add `isLiked` for UI convenience
+    updatedPost.isLiked = false;
+
+    return updatedPost;
   } catch (error) {
     console.log('Error from deleteLikeService! ', error);
+    throw error;
+  }
+};
+
+export const getLikeService = async (user, targetId, targetType) => {
+  try {
+    const response = await likeRepository.isLiked({
+      user,
+      targetId,
+      targetType
+    });
+
+    return response;
+  } catch (error) {
+    console.log('Error from getLikeService', error);
     throw error;
   }
 };

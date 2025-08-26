@@ -8,6 +8,7 @@ import { getIO } from '../utils/socketUtils/socket.js';
 import { getUserSocketId } from '../utils/socketUtils/socketEventUtils.js';
 import { getFollowersService } from './followService.js';
 import userRepository from '../repositories/userRepository.js';
+import { getLikeService } from './likeService.js';
 
 export const updatePostCount = async (id, count) => {
   let postCount = await postRepository.getPostCount(id);
@@ -58,11 +59,20 @@ export const createPostService = async (urls, userId, caption) => {
   }
 };
 
-export const getPostByIdService = async (id) => {
+export const getPostByIdService = async (user, id) => {
   try {
     const post = await postRepository.getById(id);
 
-    return post;
+    let isLiked = await likeRepository.isLiked({
+      user,
+      targetId: id,
+      targetType: 'post'
+    });
+
+    const postObj = post.toObject(); // convert mongoose doc → plain object
+    postObj.isLiked = !!isLiked;
+
+    return postObj;
   } catch (error) {
     console.log('Error from get post by id service!', error);
     throw error;
