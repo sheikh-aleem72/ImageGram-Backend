@@ -9,6 +9,11 @@ const postRepository = {
       createdAt: -1
     });
     return response;
+  },
+  getPostCount: async function (userId) {
+    const response = await Post.countDocuments({ author: userId });
+
+    return response;
   }
 };
 

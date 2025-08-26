@@ -7,6 +7,22 @@ import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
 import { getUserSocketId } from '../utils/socketUtils/socketEventUtils.js';
 import { getFollowersService } from './followService.js';
+import userRepository from '../repositories/userRepository.js';
+
+export const updatePostCount = async (id, count) => {
+  const postCount = await postRepository.getPostCount(id);
+  console.log('post Count: ', postCount);
+
+  // update post count when post is created
+  if (count > 0) {
+    await userRepository.update(id, { postCount: postCount + 1 });
+  } else {
+    // update post count when post is removed
+    if (postCount === 0) return;
+    await userRepository.update(id, { postCount: postCount - 1 });
+    console.log('post count after delet: ', postCount);
+  }
+};
 
 export const createPostService = async (urls, userId, caption) => {
   try {
@@ -15,6 +31,9 @@ export const createPostService = async (urls, userId, caption) => {
       author: userId,
       caption: caption
     });
+
+    // Update post count
+    await updatePostCount(userId, 1);
 
     // Notify followers about new post
     const followers = await getFollowersService(userId);
@@ -71,7 +90,7 @@ export const getAllPostsService = async () => {
 export const deletePostService = async (id, userId) => {
   try {
     const post = await getPostByIdService(id);
-    if (post?.author != userId) {
+    if (post?.author?._id != userId) {
       throw new ClientError({
         message: 'User is not authorized!',
         status: StatusCodes.FORBIDDEN
@@ -83,6 +102,9 @@ export const deletePostService = async (id, userId) => {
 
     // Delete likes
     await likeRepository.deleteMany(id);
+
+    // Update post count
+    await updatePostCount(userId, -1);
 
     const response = await postRepository.delete(id);
     return response;

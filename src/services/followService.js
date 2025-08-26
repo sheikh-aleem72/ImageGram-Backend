@@ -14,7 +14,6 @@ import { checkIfUserExists } from './userService.js';
 
 export const updateFollowerCount = async (id) => {
   const followerCount = await followRepository.getFollowersCount(id);
-  console.log('Follower count: ', followerCount);
 
   await userRepository.update(id, { followersCount: followerCount });
 };

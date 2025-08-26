@@ -20,7 +20,7 @@ router.get('/user/:userId', isAuthenticated, getAllPostsOfUserController);
 
 router.get('/all', isAuthenticated, getAllPostsController);
 
-router.delete('/delete/:id', isAuthenticated, deletePostController);
+router.delete('/delete', isAuthenticated, deletePostController);
 
 router.put('/:id', isAuthenticated, updateCaptionOfPostController);
 
