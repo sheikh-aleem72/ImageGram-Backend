@@ -10,16 +10,19 @@ import { getFollowersService } from './followService.js';
 import userRepository from '../repositories/userRepository.js';
 
 export const updatePostCount = async (id, count) => {
-  const postCount = await postRepository.getPostCount(id);
+  let postCount = await postRepository.getPostCount(id);
   console.log('post Count: ', postCount);
 
   // update post count when post is created
   if (count > 0) {
-    await userRepository.update(id, { postCount: postCount + 1 });
+    postCount = postCount + 1;
+    await userRepository.update(id, { postCount });
+    console.log('post count after create: ', postCount);
   } else {
     // update post count when post is removed
     if (postCount === 0) return;
-    await userRepository.update(id, { postCount: postCount - 1 });
+    postCount = postCount - 1;
+    await userRepository.update(id, { postCount });
     console.log('post count after delet: ', postCount);
   }
 };
@@ -32,8 +35,8 @@ export const createPostService = async (urls, userId, caption) => {
       caption: caption
     });
 
-    // Update post count
-    await updatePostCount(userId, 1);
+    // increment post count after create
+    await userRepository.update({ _id: userId }, { $inc: { postCount: 1 } });
 
     // Notify followers about new post
     const followers = await getFollowersService(userId);
@@ -103,8 +106,8 @@ export const deletePostService = async (id, userId) => {
     // Delete likes
     await likeRepository.deleteMany(id);
 
-    // Update post count
-    await updatePostCount(userId, -1);
+    // decrement post count after delete
+    await userRepository.update({ _id: userId }, { $inc: { postCount: -1 } });
 
     const response = await postRepository.delete(id);
     return response;
