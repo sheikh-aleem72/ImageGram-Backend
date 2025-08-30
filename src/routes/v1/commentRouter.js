@@ -13,11 +13,21 @@ const router = express.Router();
 
 router.post('/create', isAuthenticated, createCommentController);
 
-router.get('/replies', isAuthenticated, getAllRepliesController);
+router.get(
+  '/replies/:parentCommentId',
+  isAuthenticated,
+  getAllRepliesController
+);
 
+// To fetch all comments (comments and replies)
 router.get('/all-comments', isAuthenticated, getAllCommentsOfPostController);
 
-router.get('/comments', isAuthenticated, getAllParentCommentsOfPostController);
+// To fetch only comments
+router.get(
+  '/comments/:postId',
+  isAuthenticated,
+  getAllParentCommentsOfPostController
+);
 
 router.delete('/delete', isAuthenticated, deleteCommentController);
 

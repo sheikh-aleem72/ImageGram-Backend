@@ -41,7 +41,10 @@ export const createCommentController = async (req, res) => {
 
 export const getAllRepliesController = async (req, res) => {
   try {
-    const response = await getAllRepliesService(req.body.parentCommentId);
+    const response = await getAllRepliesService(
+      req.user.id,
+      req.params.parentCommentId
+    );
 
     return res
       .status(StatusCodes.CREATED)
@@ -62,7 +65,10 @@ export const getAllRepliesController = async (req, res) => {
 
 export const getAllCommentsOfPostController = async (req, res) => {
   try {
-    const response = await getAllCommentsOfPostService(req.body.postId);
+    const response = await getAllCommentsOfPostService(
+      req.user.id,
+      req.body.postId
+    );
 
     return res
       .status(StatusCodes.CREATED)
@@ -104,7 +110,10 @@ export const deleteCommentController = async (req, res) => {
 
 export const getAllParentCommentsOfPostController = async (req, res) => {
   try {
-    const response = await getAllParentCommentsOfPostService(req.body.postId);
+    const response = await getAllParentCommentsOfPostService(
+      req.user.id,
+      req.params.postId
+    );
 
     return res
       .status(StatusCodes.CREATED)

@@ -3,13 +3,14 @@ import { StatusCodes } from 'http-status-codes';
 import { commentRepository } from '../repositories/commentRepository.js';
 import likeRepository from '../repositories/likeRepository.js';
 import postRepository from '../repositories/postRepository.js';
+import Post from '../schema/postSchema.js';
 import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
 import {
   removeNotificationService,
   sendNotification
 } from './notificationService.js';
-import Post from '../schema/postSchema.js';
+import Comment from '../schema/commentSchema.js';
 
 export const updateLikeCount = async (targetId, targetType) => {
   // get likes count
@@ -105,7 +106,7 @@ export const deleteLikeService = async (user, targetId, targetType) => {
       });
     }
 
-    let response = await likeRepository.delete(isLiked._id);
+    await likeRepository.delete(isLiked._id);
 
     // Get author of target
     const target = await getAuthorOfTarget(targetId, targetType);
@@ -114,18 +115,34 @@ export const deleteLikeService = async (user, targetId, targetType) => {
     await removeNotificationService('like', user, target.author);
 
     // Decrement likeCount in Post
-    const updatedPost = await Post.findByIdAndUpdate(
-      targetId,
-      { $inc: { likeCount: -1 } },
-      { new: true } // <-- return updated doc
-    )
-      .populate('author', 'username profilePicture')
-      .lean();
+    if (targetType === 'post') {
+      const updatedPost = await Post.findByIdAndUpdate(
+        targetId,
+        { $inc: { likeCount: -1 } },
+        { new: true } // <-- return updated doc
+      )
+        .populate('author', 'username profilePicture')
+        .lean();
 
-    // Add `isLiked` for UI convenience
-    updatedPost.isLiked = false;
+      // Add `isLiked` for UI convenience
+      updatedPost.isLiked = false;
 
-    return updatedPost;
+      return updatedPost;
+    }
+    if (targetType === 'comment') {
+      const updatedComment = await Comment.findByIdAndUpdate(
+        targetId,
+        { $inc: { likeCount: -1 } },
+        { new: true } // <-- return updated doc
+      )
+        .populate('author', 'username profilePicture')
+        .lean();
+
+      // Add `isLiked` for UI convenience
+      updatedComment.isLiked = false;
+
+      return updatedComment;
+    }
   } catch (error) {
     console.log('Error from deleteLikeService! ', error);
     throw error;

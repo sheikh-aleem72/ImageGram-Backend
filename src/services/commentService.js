@@ -5,6 +5,8 @@ import postRepository from '../repositories/postRepository.js';
 import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
 import { sendNotification } from './notificationService.js';
+import likeRepository from '../repositories/likeRepository.js';
+import Like from '../schema/likeSchema.js';
 
 export const updateCommentCount = async (postId) => {
   const commentCount = await commentRepository.getCommentsCount(postId);
@@ -82,7 +84,7 @@ export const createCommentService = async (
   }
 };
 
-export const getAllRepliesService = async (parentCommentId) => {
+export const getAllRepliesService = async (user, parentCommentId) => {
   try {
     // Check if the parent comment exists
     const parent = await commentRepository.getById(parentCommentId);
@@ -95,14 +97,30 @@ export const getAllRepliesService = async (parentCommentId) => {
 
     const replies = await commentRepository.getChildComments(parentCommentId);
 
-    return replies;
+    // // Collect all replies Id
+    const replyIds = replies.map((r) => r._id.toString());
+
+    // Fetch likes in query
+    const likeIds = await Like.find({
+      user: user,
+      targetId: { $in: replyIds },
+      targetType: 'comment'
+    }).distinct('targetId');
+
+    // Attach isLiked with each replies
+    const repliesWithIds = replies.map((r) => ({
+      ...r,
+      isLiked: likeIds.some((id) => id.equals(r._id))
+    }));
+
+    return repliesWithIds;
   } catch (error) {
     console.log('Error in getAllRepliesService!: ', error);
     throw error;
   }
 };
 
-export const getAllCommentsOfPostService = async (postId) => {
+export const getAllCommentsOfPostService = async (user, postId) => {
   try {
     // Check if the post exists
     const post = await postRepository.getById(postId);
@@ -115,14 +133,30 @@ export const getAllCommentsOfPostService = async (postId) => {
 
     const response = await commentRepository.getAllCommentsOfPost(postId);
 
-    return response;
+    // Fetch all commentIds
+    const commentIds = response.map((r) => r._id.toString());
+
+    // Fetch likes in query
+    const likeIds = await Like.find({
+      user: user,
+      targetId: { $in: commentIds },
+      targetType: 'comment'
+    }).distinct('targetId');
+
+    // Attach isLiked with comments
+    const commentsWithIsLiked = response.map((c) => ({
+      ...c,
+      isLiked: likeIds.some((id) => id.equals(c._id))
+    }));
+
+    return commentsWithIsLiked;
   } catch (error) {
     console.log('Error in getAllCommentsOfPostService!: ', error);
     throw error;
   }
 };
 
-export const getAllParentCommentsOfPostService = async (postId) => {
+export const getAllParentCommentsOfPostService = async (user, postId) => {
   try {
     // Check if the post exists
     const post = await postRepository.getById(postId);
@@ -134,6 +168,24 @@ export const getAllParentCommentsOfPostService = async (postId) => {
     }
 
     const response = await commentRepository.getAllParentCommentsOfPost(postId);
+
+    // Fetch all commentIds
+    const commentIds = response.map((r) => r._id.toString());
+
+    // Fetch likes in query
+    const likeIds = await Like.find({
+      user: user,
+      targetId: { $in: commentIds },
+      targetType: 'comment'
+    }).distinct('targetId');
+
+    // Attach isLiked with comments
+    const commentsWithIsLiked = response.map((c) => ({
+      ...c,
+      isLiked: likeIds.some((id) => id.equals(c._id))
+    }));
+
+    return commentsWithIsLiked;
 
     return response;
   } catch (error) {

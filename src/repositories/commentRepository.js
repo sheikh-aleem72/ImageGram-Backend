@@ -30,10 +30,20 @@ export const commentRepository = {
       }
     ]);
 
-    const response = await Comment.populate(result[0].allReplies, {
-      path: 'author',
-      select: 'username profilePicture'
-    });
+    const response = await Comment.populate(result[0].allReplies, [
+      {
+        path: 'author',
+        select: 'username profilePicture'
+      },
+      {
+        path: 'parentComment',
+        select: 'author',
+        populate: {
+          path: 'author', // 👈 populate the author inside parentComment
+          select: 'username profilePicture'
+        }
+      }
+    ]);
 
     return response;
   },
@@ -45,13 +55,38 @@ export const commentRepository = {
   },
 
   getAllParentCommentsOfPost: async function (postId) {
-    const response = await Comment.find({ postId, parentComment: null }).sort({
-      createdAt: -1
+    let response = await Comment.aggregate([
+      {
+        $match: {
+          postId: new mongoose.Types.ObjectId(postId),
+          parentComment: null
+        }
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'parentComment',
+          as: 'replies'
+        }
+      },
+      {
+        $addFields: {
+          replyCount: { $size: '$replies' }
+        }
+      },
+      { $project: { replies: 0 } }, // exclude actual replies
+      { $sort: { createdAt: -1 } } // ✅ use $sort inside pipeline
+    ]);
+
+    // ✅ populate author field manually after aggregate
+    response = await Comment.populate(response, {
+      path: 'author',
+      select: 'username profilePicture'
     });
 
     return response;
   },
-
   deleteComment: async function (commentId) {
     // Get all child comments recursively
     const result = await Comment.aggregate([

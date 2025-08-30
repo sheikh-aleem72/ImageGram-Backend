@@ -3,12 +3,11 @@ import { StatusCodes } from 'http-status-codes';
 import { commentRepository } from '../repositories/commentRepository.js';
 import likeRepository from '../repositories/likeRepository.js';
 import postRepository from '../repositories/postRepository.js';
+import userRepository from '../repositories/userRepository.js';
 import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
 import { getUserSocketId } from '../utils/socketUtils/socketEventUtils.js';
 import { getFollowersService } from './followService.js';
-import userRepository from '../repositories/userRepository.js';
-import { getLikeService } from './likeService.js';
 
 export const updatePostCount = async (id, count) => {
   let postCount = await postRepository.getPostCount(id);
