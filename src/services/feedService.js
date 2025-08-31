@@ -1,7 +1,7 @@
 import Post from '../schema/postSchema.js';
 import { getFollowingService } from './followService.js';
 
-const FEED_PAGE_SIZE = 20;
+// const FEED_PAGE_SIZE = 20;
 
 export const feedService = async (userId) => {
   try {
