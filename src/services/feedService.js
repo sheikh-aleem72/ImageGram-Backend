@@ -14,6 +14,9 @@ export const feedService = async (userId, beforeCursor) => {
       followingList.push(user?.followingUser);
     });
 
+    // Add current user in the list
+    followingList.push(userId);
+
     // Build query
     const query = {
       author: { $in: followingList }

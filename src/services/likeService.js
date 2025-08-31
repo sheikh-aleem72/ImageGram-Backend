@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { commentRepository } from '../repositories/commentRepository.js';
 import likeRepository from '../repositories/likeRepository.js';
 import postRepository from '../repositories/postRepository.js';
+import Comment from '../schema/commentSchema.js';
 import Post from '../schema/postSchema.js';
 import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
@@ -10,7 +11,6 @@ import {
   removeNotificationService,
   sendNotification
 } from './notificationService.js';
-import Comment from '../schema/commentSchema.js';
 
 export const updateLikeCount = async (targetId, targetType) => {
   // get likes count

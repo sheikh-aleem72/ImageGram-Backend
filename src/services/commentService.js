@@ -2,11 +2,10 @@ import { StatusCodes } from 'http-status-codes';
 
 import { commentRepository } from '../repositories/commentRepository.js';
 import postRepository from '../repositories/postRepository.js';
+import Like from '../schema/likeSchema.js';
 import ClientError from '../utils/errors/clientError.js';
 import { getIO } from '../utils/socketUtils/socket.js';
 import { sendNotification } from './notificationService.js';
-import likeRepository from '../repositories/likeRepository.js';
-import Like from '../schema/likeSchema.js';
 
 export const updateCommentCount = async (postId) => {
   const commentCount = await commentRepository.getCommentsCount(postId);
@@ -186,8 +185,6 @@ export const getAllParentCommentsOfPostService = async (user, postId) => {
     }));
 
     return commentsWithIsLiked;
-
-    return response;
   } catch (error) {
     console.log('Error in getAllParentCommentsOfPostService!: ', error);
     throw error;
