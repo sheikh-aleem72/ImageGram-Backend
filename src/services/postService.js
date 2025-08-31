@@ -62,7 +62,12 @@ export const getPostByIdService = async (user, id) => {
   try {
     const post = await postRepository.getById(id);
 
-    if (!post) return;
+    if (!post) {
+      throw new ClientError({
+        message: 'Post does not exist!',
+        status: StatusCodes.NOT_FOUND
+      });
+    }
 
     let isLiked = await likeRepository.isLiked({
       user,
@@ -103,8 +108,15 @@ export const getAllPostsService = async () => {
 
 export const deletePostService = async (id, userId) => {
   try {
-    const post = await getPostByIdService(id);
-    if (!post) return;
+    const post = await postRepository.getById(id);
+
+    if (!post) {
+      throw new ClientError({
+        message: 'Post does not exist!',
+        status: StatusCodes.NOT_FOUND
+      });
+    }
+
     if (post?.author?._id != userId) {
       throw new ClientError({
         message: 'User is not authorized!',
@@ -122,6 +134,7 @@ export const deletePostService = async (id, userId) => {
     await userRepository.update({ _id: userId }, { $inc: { postCount: -1 } });
 
     const response = await postRepository.delete(id);
+
     return response;
   } catch (error) {
     console.log('Error from deletePostService', error);

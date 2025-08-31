@@ -92,7 +92,6 @@ export const getAllPostsController = async (req, res) => {
 
 export const deletePostController = async (req, res) => {
   try {
-    console.log('req.body.postId: ', req.body.postId);
     const response = await deletePostService(req.body.postId, req.user.id);
 
     return res
