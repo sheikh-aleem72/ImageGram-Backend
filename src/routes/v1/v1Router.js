@@ -9,6 +9,7 @@ import likeRouter from './likeRouter.js';
 import notificationRouter from './notificationRouter.js';
 import postRouter from './postRouter.js';
 import usersRouter from './usersRouter.js';
+import searchRouter from './searchRouter.js';
 
 const router = express.Router();
 
@@ -29,5 +30,7 @@ router.use('/feed', feedRouter);
 router.use('/cloudinary', cloudinaryRouter);
 
 router.use('/notifications', notificationRouter);
+
+router.use('/search', searchRouter);
 
 export default router;
