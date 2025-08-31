@@ -62,6 +62,8 @@ export const getPostByIdService = async (user, id) => {
   try {
     const post = await postRepository.getById(id);
 
+    if (!post) return;
+
     let isLiked = await likeRepository.isLiked({
       user,
       targetId: id,
@@ -102,6 +104,7 @@ export const getAllPostsService = async () => {
 export const deletePostService = async (id, userId) => {
   try {
     const post = await getPostByIdService(id);
+    if (!post) return;
     if (post?.author?._id != userId) {
       throw new ClientError({
         message: 'User is not authorized!',
