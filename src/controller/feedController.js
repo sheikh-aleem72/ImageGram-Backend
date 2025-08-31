@@ -9,7 +9,7 @@ import {
 
 export const feedController = async (req, res) => {
   try {
-    const response = await feedService(req.user.id, req.query.before);
+    const response = await feedService(req.user.id);
 
     return res
       .status(StatusCodes.OK)

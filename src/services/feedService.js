@@ -3,7 +3,7 @@ import { getFollowingService } from './followService.js';
 
 const FEED_PAGE_SIZE = 20;
 
-export const feedService = async (userId, beforeCursor) => {
+export const feedService = async (userId) => {
   try {
     // Get following list of user
     let list = await getFollowingService(userId);
@@ -22,23 +22,12 @@ export const feedService = async (userId, beforeCursor) => {
       author: { $in: followingList }
     };
 
-    if (beforeCursor) {
-      query.createdAt = { $lt: new Date(beforeCursor) };
-    }
-
     // Fetch posts with pagination
     const posts = await Post.find(query)
       .sort({ createdAt: -1 })
-      .limit(FEED_PAGE_SIZE)
       .populate('author', 'username profilePicture');
 
-    // Determine next cursor
-    let nextCursor = null;
-    if (posts.length == FEED_PAGE_SIZE) {
-      nextCursor = posts[posts.length - 1].createdAt.toISOString();
-    }
-
-    return { posts, nextCursor };
+    return posts;
   } catch (error) {
     console.log('Error from feedService!: ', error);
     throw error;
