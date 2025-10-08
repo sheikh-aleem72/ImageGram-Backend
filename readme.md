@@ -46,6 +46,7 @@ npm run dev
 
 ## 📂 Folder Structure
 
+```
 src/
 ├── config/ # DB & cloudinary config
 ├── controllers/ # Request validation
@@ -55,6 +56,8 @@ src/
 ├── routes/ # API routes
 ├── utils/ # Helpers
 └── index.js # Entry point
+
+```
 
 ## 📡 API Endpoints (Sample)
 
