@@ -1,9 +1,7 @@
----
 # 🖥️ ImageGram Backend
 
 This repository contains the **backend** for ImageGram, a social media app built with the **MERN stack**.
 It provides a **REST API** for user authentication, image uploads, posts, likes, comments, and real-time notifications.
----
 
 ## 🚀 Features
 
